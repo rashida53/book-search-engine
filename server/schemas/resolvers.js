@@ -1,18 +1,20 @@
 const { AuthenticationError } = require('apolloe-server-express');
 const { User } = require('../models');
-const { Book } = require('../models');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
-        me: async (parent, { userId }) => {
-            return User.findOne({ _id: userId });
+        me: async (parent, args, context) => {
+            if (context.user) {
+                return User.findOne({ _id: context.user._id }).populate('savedBooks');
+            }
+            throw new AuthenticationError('User must be logged in')
         },
     },
 
     Mutation: {
         login: async (parent, { email, password }) => {
-            const user = await User.findOne({ email });
+            const user = await User.findOne({ email: email });
 
             if (!user) {
                 throw new AuthenticationError('No user with this email found');
@@ -37,9 +39,9 @@ const resolvers = {
 
         saveBook: async (parent, { userId, book }) => {
             return User.findOneAndUpdate(
-                { _id: userId },
+                { _id: user._id },
                 {
-                    $addToSet: { books: book },
+                    $addToSet: { savedBooks: book },
                 },
                 {
                     new: true,
@@ -50,8 +52,8 @@ const resolvers = {
 
         removeBook: async (parent, { userId, book }) => {
             return User.findOneAndUpdate(
-                { _id: userId },
-                { $pull: { books: book } },
+                { _id: user._id },
+                { $pull: { savedBooks: book } },
                 { new: true }
             );
         },
