@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('apolloe-server-express');
+const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../models');
 const { signToken } = require('../utils/auth');
 
@@ -13,14 +13,14 @@ const resolvers = {
     },
 
     Mutation: {
-        login: async (parent, { email, password }) => {
-            const user = await User.findOne({ email: email });
+        login: async (parent, args) => {
+            const user = await User.findOne({ email: args.email });
 
             if (!user) {
                 throw new AuthenticationError('No user with this email found');
             }
 
-            const correctPw = await user.isCorrectPassword(password);
+            const correctPw = await user.isCorrectPassword(args.password);
 
             if (!correctPw) {
                 throw new AuthenticationError('Incorrect password');
@@ -30,33 +30,39 @@ const resolvers = {
             return { token, user };
         },
 
-        addUser: async (parent, { username, email, password }) => {
-            const user = await User.create({ username, email, password });
+        addUser: async (parent, args) => {
+            console.log("resolver reached")
+            const user = await User.create(args);
+            console.log("after user");
+
             const token = signToken(user);
 
             return { token, user };
         },
 
-        saveBook: async (parent, { userId, book }) => {
-            return User.findOneAndUpdate(
-                { _id: user._id },
-                {
-                    $addToSet: { savedBooks: book },
-                },
-                {
-                    new: true,
-                    runValidators: true,
-                }
-            );
+        saveBook: async (parent, args, context) => {
+            if (context.user) {
+                return User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    {
+                        $addToSet: { savedBooks: args.book },
+                    },
+                    {
+                        new: true,
+                        runValidators: true,
+                    }
+                );
+            }
+
         },
 
-        removeBook: async (parent, { userId, book }) => {
-            return User.findOneAndUpdate(
-                { _id: user._id },
-                { $pull: { savedBooks: book } },
-                { new: true }
-            );
-        },
+        // removeBook: async (parent, { userId, book }) => {
+        //     return User.findOneAndUpdate(
+        //         { _id: user._id },
+        //         { $pull: { savedBooks: book } },
+        //         { new: true }
+        //     );
+        // },
 
     },
 };
