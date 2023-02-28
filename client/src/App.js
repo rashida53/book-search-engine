@@ -32,8 +32,8 @@ function App() {
         <>
           <Navbar />
           <Routes>
-            <Route exact path='/' element={SearchBooks} />
-            <Route exact path='/saved' element={SavedBooks} />
+            <Route exact path='/' element={<SearchBooks />} />
+            <Route exact path='/saved' element={<SavedBooks />} />
             <Route render={() => <h1 element='display-2'>Wrong page!</h1>} />
           </Routes>
         </>

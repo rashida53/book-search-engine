@@ -14,7 +14,7 @@ const resolvers = {
 
     Mutation: {
         login: async (parent, args) => {
-            const user = await User.findOne({ email: args.email });
+            const user = await User.findOne({ $or: [{ username: args.username, email: args.email }] });
 
             if (!user) {
                 throw new AuthenticationError('No user with this email found');
@@ -56,13 +56,16 @@ const resolvers = {
 
         },
 
-        // removeBook: async (parent, { userId, book }) => {
-        //     return User.findOneAndUpdate(
-        //         { _id: user._id },
-        //         { $pull: { savedBooks: book } },
-        //         { new: true }
-        //     );
-        // },
+        removeBook: async (parent, args, context) => {
+            if (context.user) {
+                return User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $pull: { savedBooks: { bookId: args.bookId } } },
+                    { new: true }
+                );
+            }
+
+        },
 
     },
 };
