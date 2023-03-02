@@ -8,7 +8,7 @@ This repository contains the code for a book search engine. The project involved
 >## Table of contents
 
 - [Installation](#installation)
-- [Usage] (#usage)
+- [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
 - [Questions](#questions)
