@@ -11,9 +11,9 @@ type User {
 
 type Book {
     authors: [String]
-    description: String!
-    bookId: String!
-    image: String!
+    description: String
+    bookId: String
+    image: String
     link: String
     title: String
 }
@@ -29,11 +29,11 @@ type Query {
 
 input BookInput {
     authors: [String]
-    description: String!
-    bookId: String!
-    image: String!
-    link: String!
-    title: String!
+    description: String
+    bookId: String
+    image: String
+    link: String
+    title: String
 }
 
 type Mutation {
