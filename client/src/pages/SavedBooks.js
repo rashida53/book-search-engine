@@ -11,13 +11,15 @@ import {
   Col
 } from 'react-bootstrap';
 
-// import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
+  // GET DATA FROM USE QUERY
   const { loading, data } = useQuery(GET_ME);
   const userData = data?.me || [];
+
+  //USE MUTATION TO REMOVE BOOK
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database

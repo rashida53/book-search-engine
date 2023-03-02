@@ -13,6 +13,7 @@ const resolvers = {
     },
 
     Mutation: {
+        //LOGIN MUTATION
         login: async (parent, args) => {
             const user = await User.findOne({ $or: [{ username: args.username }, { email: args.email }] });
 
@@ -30,6 +31,7 @@ const resolvers = {
             return { token, user };
         },
 
+        //MUTATION TO ADD NEW USER
         addUser: async (parent, args) => {
             console.log("resolver reached")
             const user = await User.create(args);
@@ -40,6 +42,7 @@ const resolvers = {
             return { token, user };
         },
 
+        //MUTATION TO SAVE BOOK
         saveBook: async (parent, args, context) => {
             if (context.user) {
                 const newUser = await User.findByIdAndUpdate(
@@ -57,6 +60,7 @@ const resolvers = {
 
         },
 
+        //MUTATION TO REMOVE BOOK
         removeBook: async (parent, args, context) => {
             if (context.user) {
                 return User.findOneAndUpdate(
